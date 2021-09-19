@@ -1,2 +1,2 @@
-# Deliciouse3
- app to describe the ricpe food
+# Delicious3
+ app describe recipe food
