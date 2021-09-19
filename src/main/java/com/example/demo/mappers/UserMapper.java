@@ -1,20 +1,14 @@
 package com.example.demo.mappers;
 
-import java.util.List;
-
 import com.example.demo.entities.UserEntity;
 import com.example.demo.models.UserModel;
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 
-@Component
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring")
+import java.util.List;
+
+//@Component
+//@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring")
 
 // public abstract class UserMapper {
 // @Autowired 
@@ -31,20 +25,21 @@ import org.springframework.stereotype.Component;
 // public abstract List<UserModel> UserEntityToUserModelAsList(List<UserEntity> userEntities);
 // }
 
-public interface UserMapper {
+@Mapper(componentModel = "spring")
+public abstract class UserMapper {
 
-public static UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+//    public static UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 // public static PostMapper INSTANCE = Mappers.getMapper(PostMapper.class);
 
-@Mapping(source = "userId", target = "id")
-UserEntity UserModelToUserEntity(UserModel UserModel);
+    @Mapping(source = "userModel.userId", target = "id")
+    public abstract UserEntity userModelToUserEntity(UserModel userModel);
 
-UserModel UserEntityToUserModel(UserEntity UserEntity);
+    @Mapping(source = "userEntity.id", target = "userId")
+    public abstract UserModel userEntityToUserModel(UserEntity userEntity);
 
-List<UserEntity> UserModelToUserEntityAslist(List<UserModel> UserModel);
+    public abstract List<UserEntity> userModelToUserEntityAslist(List<UserModel> UserModel);
 
-List<UserModel> UserEntityToUserModelAsList(List<UserEntity>
-userEntities);
+    public abstract List<UserModel> userEntityToUserModelAsList(List<UserEntity> userEntities);
 
 }
 
