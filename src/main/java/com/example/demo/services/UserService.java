@@ -1,43 +1,44 @@
 package com.example.demo.services;
 
 
-import java.util.Optional;
-
 import com.example.demo.entities.UserEntity;
 import com.example.demo.exceptions.UserException;
 import com.example.demo.mappers.UserMapper;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.RecipeRepo;
 import com.example.demo.repositories.UserRepo;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
+//user interface and service class
 
     @Autowired
     UserRepo userRepo;
+
     @Autowired
     RecipeRepo recipeRepo;
 
-    public UserModel registerUser(UserModel user) throws UserException 
-    {
-        if(user.getEmail() != null && user.getPassword() != null && user.getUserName()!= null)
-        {
-            if(userRepo.findByEmail(user.getEmail()).isEmpty())
-            {
-                UserEntity entity = userRepo.save(UserMapper.INSTANCE.UserModelToUserEntity(user));
-                return user.builder().userId(entity.getId()).build();
-            }else{
-                throw new UserException("this email is already exist");
-            }
-        }else{
-            throw new UserException("required fields are null");
+    @Autowired
+    private UserMapper userMapper;
 
+    public UserModel registerUser(UserModel user) throws UserException {
+        if (user.getEmail() != null && user.getPassword() != null && user.getUserName() != null) {
+            //check if email does not exist
+            if (!userRepo.findByEmail(user.getEmail()).isPresent()) {
+                UserEntity entity = userRepo.save(userMapper.userModelToUserEntity(user));
+                user.setUserId(entity.getId());
+                return user;
+            } else {
+                throw new UserException("this email already exists");
+            }
+        } else {
+            throw new UserException("required fields are null");
         }
     }
-
 
 
     // public UserModel registerUser(UserModel user) {
@@ -63,7 +64,6 @@ public class UserService {
     //     } else {
     //         throw new UserException("required fields are null");
 
-    
 
     // TODO please check my @Bean
 
@@ -83,16 +83,15 @@ public class UserService {
     // }
 
     public UserModel signIn(UserModel user) throws UserException {
-        Optional<UserEntity> entity;
-        if ((entity = userRepo.findByEmail(user.getEmail())).isEmpty()) {
-            throw new UserException("no user with this email");
+        Optional<UserEntity> entity = userRepo.findByEmail(user.getEmail());
+        if (!entity.isPresent()) {
+            throw new UserException("no user registered with this email");
         } else {
             if (entity.get().getPassword().equals(user.getPassword())) {
-                return UserMapper.INSTANCE .UserEntityToUserModel(entity.get());
+                return userMapper.userEntityToUserModel(entity.get());
             } else {
                 throw new UserException("wrong password");
             }
-
         }
     }
 

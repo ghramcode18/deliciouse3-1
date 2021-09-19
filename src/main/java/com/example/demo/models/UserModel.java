@@ -8,6 +8,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @ToString
+@EqualsAndHashCode
 public class UserModel {
 
 //    @Bean
